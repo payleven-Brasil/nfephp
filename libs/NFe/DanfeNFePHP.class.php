@@ -1677,6 +1677,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $texto = ! empty($this->ide->getElementsByTagName("hSaiEnt")->item(0)->nodeValue) ?
                 $this->ide->getElementsByTagName("hSaiEnt")->item(0)->nodeValue:"";
+        if ($texto == '') {
+            $dhSaiEnt = ! empty($this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue) ?
+                    $this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue : '';
+            $dhSaiEnt = explode('T', $dhSaiEnt);
+            $dhSaiEnt = explode('-', $dhSaiEnt[1]);
+            $texto = $dhSaiEnt[0];
+        }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         return ($y + $h);
@@ -2244,7 +2251,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'QUANTIDADE';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = $quantidade;
+        if (is_numeric($quantidade) && $quantidade > 0) {
+            $texto = $quantidade;
+        } else {
+            $texto = '';
+        }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'B', 'C', 0, '');
         //ESPÉCIE
