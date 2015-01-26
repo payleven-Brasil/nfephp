@@ -631,20 +631,20 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $this->retirada->getElementsByTagName("UF")->item(0)->nodeValue :
                 '';
             $this->textoAdic .= "LOCAL DE RETIRADA : ".
-                    $txRetCNPJ.
-                    '-' .
-                    $txRetxLgr .
-                    ', ' .
-                    $txRetnro .
-                    ' ' .
-                    $txRetxCpl .
-                    ' - ' .
-                    $txRetxBairro .
-                    ' ' .
-                    $txRetxMun .
-                    ' - ' .
-                    $txRetUF .
-                    "\r\n";
+                $txRetCNPJ.
+                '-' .
+                $txRetxLgr .
+                ', ' .
+                $txRetnro .
+                ' ' .
+                $txRetxCpl .
+                ' - ' .
+                $txRetxBairro .
+                ' ' .
+                $txRetxMun .
+                ' - ' .
+                $txRetUF .
+                "\r\n";
         }
         //dados do local de entrega da mercadoria
         if (isset($this->entrega)) {
@@ -665,7 +665,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $this->textoAdic .= ". \r\n";
             }
             $this->textoAdic .= "LOCAL DE ENTREGA : ".$txRetCNPJ.'-'.$txRetxLgr.', '.$txRetnro.' '.$txRetxCpl.
-               ' - '.$txRetxBairro.' '.$txRetxMun.' - '.$txRetUF."\r\n";
+                ' - '.$txRetxBairro.' '.$txRetxMun.' - '.$txRetUF."\r\n";
         }
         //informações adicionais
         $this->textoAdic .= $this->pGeraInformacoesDasNotasReferenciadas();
@@ -704,7 +704,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $flagVTT = $flagVTT || strpos(strtolower(trim($this->textoAdic)), 'vl');
             $flagVTT = $flagVTT && strpos(strtolower(trim($this->textoAdic)), 'aprox');
             $flagVTT = $flagVTT && (strpos(strtolower(trim($this->textoAdic)), 'trib') ||
-                    strpos(strtolower(trim($this->textoAdic)), 'imp'));
+                                    strpos(strtolower(trim($this->textoAdic)), 'imp'));
             $vTotTrib = $this->pSimpleGetValue($this->ICMSTot, 'vTotTrib');
             if ($vTotTrib != '' && !$flagVTT) {
                 $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTrib, 2, ",", ".");
@@ -732,9 +732,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $hCabecItens = 4;//cabeçalho dos itens
         //alturas disponiveis para os dados
         $hDispo1 = $this->hPrint - ($hcabecalho +
-            $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte +
-            ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens +
-            $this->pSizeExtraTextoFatura());
+                                    $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte +
+                                    ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens +
+                                    $this->pSizeExtraTextoFatura());
         if ($this->orientacao == 'P') {
             $hDispo1 -= 23 * $this->qCanhoto;//para canhoto
         } else {
@@ -799,10 +799,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //coloca os dados adicionais da NFe
         $y = $this->pDadosAdicionaisDANFE($x, $y, $hdadosadic);
         //coloca o rodapé da página
-        if ($this->orientacao == 'P') {
-            $this->pRodape($xInic, $y-1);
-        } else {
-            $this->pRodape($xInic, $this->hPrint + 1);
+        if ($this->debugMode) {
+            if ($this->orientacao == 'P') {
+                $this->pRodape($xInic, $y-1);
+            } else {
+                $this->pRodape($xInic, $this->hPrint + 1);
+            }
         }
         //loop para páginas seguintes
         for ($n = 2; $n <= $totPag; $n++) {
@@ -822,10 +824,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             //coloca os itens na página adicional
             $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag);
             //coloca o rodapé da página
-            if ($this->orientacao == 'P') {
-                $this->pRodape($xInic, $y + 4);
-            } else {
-                $this->pRodape($xInic, $this->hPrint + 4);
+            if ($this->debugMode) {
+                if ($this->orientacao == 'P') {
+                    $this->pRodape($xInic, $y + 4);
+                } else {
+                    $this->pRodape($xInic, $this->hPrint + 4);
+                }
             }
             //se estiver na última página e ainda restar itens para inserir, adiciona mais uma página
             if ($n == $totPag && $this->qtdeItensProc < $qtdeItens) {
