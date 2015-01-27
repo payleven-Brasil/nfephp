@@ -799,12 +799,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //coloca os dados adicionais da NFe
         $y = $this->pDadosAdicionaisDANFE($x, $y, $hdadosadic);
         //coloca o rodapé da página
-        if ($this->debugMode) {
-            if ($this->orientacao == 'P') {
-                $this->pRodape($xInic, $y-1);
-            } else {
-                $this->pRodape($xInic, $this->hPrint + 1);
-            }
+        if ($this->orientacao == 'P') {
+            $this->pRodape($xInic, $y-1);
+        } else {
+            $this->pRodape($xInic, $this->hPrint + 1);
         }
         //loop para páginas seguintes
         for ($n = 2; $n <= $totPag; $n++) {
@@ -824,12 +822,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             //coloca os itens na página adicional
             $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag);
             //coloca o rodapé da página
-            if ($this->debugMode) {
-                if ($this->orientacao == 'P') {
-                    $this->pRodape($xInic, $y + 4);
-                } else {
-                    $this->pRodape($xInic, $this->hPrint + 4);
-                }
+            if ($this->orientacao == 'P') {
+                $this->pRodape($xInic, $y + 4);
+            } else {
+                $this->pRodape($xInic, $this->hPrint + 4);
             }
             //se estiver na última página e ainda restar itens para inserir, adiciona mais uma página
             if ($n == $totPag && $this->qtdeItensProc < $qtdeItens) {
@@ -2840,6 +2836,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function pRodape($x, $y)
     {
+        if ($this->debugMode < 1) {
+            return;
+        }
+
         if ($this->orientacao == 'P') {
               $w = $this->wPrint;
         } else {
