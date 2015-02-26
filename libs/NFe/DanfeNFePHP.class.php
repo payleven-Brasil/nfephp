@@ -1666,7 +1666,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $IE = $this->dest->getElementsByTagName("IE");
-        $texto = ($IE && $IE->length > 0) ? $IE->item(0)->nodeValue : '';
+        $texto = ($IE && $IE->length > 0) ? $IE->item(0)->nodeValue : 'ISENTO';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         //HORA DA SAÍDA
