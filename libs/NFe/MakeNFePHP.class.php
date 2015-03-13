@@ -105,6 +105,7 @@ class MakeNFe
     private $aAutXML = array(); //array de DOMNodes
     private $aDet = array(); //array de DOMNodes
     private $aProd = array(); //array de DOMNodes
+    private $aNVE = array(); //array de DOMNodes
     private $aDetExport = array(); //array de DOMNodes
     private $aDI = array(); //array de DOMNodes
     private $aAdi = array(); //array de DOMNodes
@@ -430,10 +431,16 @@ class MakeNFe
             $refNFP,
             "CNPJ",
             $cnpj,
-            true,
+            false,
             $identificador . "Informar o CNPJ do emitente da NF de produtor"
         );
-        $this->zAddChild($refNFP, "CPF", $cpf, true, $identificador . "Informar o CPF do emitente da NF de produtor");
+        $this->zAddChild(
+            $refNFP,
+            "CPF",
+            $cpf,
+            false,
+            $identificador . "Informar o CPF do emitente da NF de produtor"
+        );
         $this->zAddChild(
             $refNFP,
             "IE",
@@ -864,12 +871,30 @@ class MakeNFe
         if (empty($this->aProd)) {
             return '';
         }
+        //insere NVE
+        if (! empty($this->aNVE)) {
+            foreach ($this->aNVE as $nItem => $nve) {
+                $prod = $this->aProd[$nItem];
+                foreach ($nve as $child) {
+                    $node = $prod->getElementsByTagName("EXTIPI")->item(0);
+                    if (empty($node)) {
+                        $node = $prod->getElementsByTagName("CFOP")->item(0);
+                    }
+                    $prod->insertBefore($child, $node);
+                }
+            }
+        }
         //insere DI
         if (!empty($this->aDI)) {
             foreach ($this->aDI as $nItem => $aDI) {
                 $prod = $this->aProd[$nItem];
                 foreach ($aDI as $child) {
-                    $this->zAppChild($prod, $child, "Inclusão do node DI");
+                    $node = $prod->getElementsByTagName("xPed")->item(0);
+                    if (! empty($node)) {
+                        $prod->insertBefore($child, $node);
+                    } else {
+                        $this->zAppChild($prod, $child, "Inclusão do node DI");
+                    }
                 }
                 $this->aProd[$nItem] = $prod;
             }
@@ -950,7 +975,6 @@ class MakeNFe
      * @param string $cEAN
      * @param string $xProd
      * @param string $NCM
-     * @param string $NVE
      * @param string $EXTIPI
      * @param string $CFOP
      * @param string $uCom
@@ -1013,13 +1037,6 @@ class MakeNFe
         );
         $this->zAddChild($prod, "xProd", $xProd, true, $identificador . "[item $nItem] Descrição do produto ou serviço");
         $this->zAddChild($prod, "NCM", $NCM, true, $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)");
-        $this->zAddChild(
-            $prod,
-            "NVE",
-            $NVE,
-            false,
-            $identificador . "[item $nItem] Codificação NVE - Nomenclatura de Valor Aduaneiro e Estatística"
-        );
         $this->zAddChild($prod, "EXTIPI", $EXTIPI, false, $identificador . "[item $nItem] Preencher de acordo com o código EX da TIPI");
         $this->zAddChild($prod, "CFOP", $CFOP, true, $identificador . "[item $nItem] Código Fiscal de Operações e Prestações");
         $this->zAddChild($prod, "uCom", $uCom, true, $identificador . "[item $nItem] Unidade Comercial do produto");
@@ -1061,6 +1078,20 @@ class MakeNFe
         $this->zAddChild($prod, "nRECOPI", $nRECOPI, false, $identificador . "[item $nItem] Número do RECOPI");
         $this->aProd[$nItem] = $prod;
         return $prod;
+    }
+
+    /**
+     * tagNVE
+     * NVE NOMENCLATURA DE VALOR ADUANEIRO E ESTATÍSTICA
+     * @param string $nItem
+     * @param string $texto
+     * @return DOMElement
+     */
+    public function tagNVE($nItem = '', $texto = '')
+    {
+        $nve = $this->dom->createElement("NVE", $texto);
+        $this->aNVE[$nItem][] = $nve;
+        return $nve;
     }
     
     /**
@@ -3339,7 +3370,7 @@ class MakeNFe
         $this->zAddChild($confinsoutr, "pCOFINS", $pCOFINS, false, "Alíquota da COFINS (em percentual)");
         $this->zAddChild($confinsoutr, "qBCProd", $qBCProd, false, "Quantidade Vendida");
         $this->zAddChild($confinsoutr, "vAliqProd", $vAliqProd, false, "Alíquota da COFINS (em reais)");
-        $this->zAddChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
+        $this->zAddChild($confinsoutr, "vCOFINS", $vCOFINS, false, "Valor da COFINS");
         return $confinsoutr;
     }
 
